@@ -59,7 +59,7 @@ app.include_router(reports_router)
 app.include_router(photo_students_router)
 
 # Mount uploads directory for student photos
-uploads_dir = settings.BASE_DIR / "uploads"
+uploads_dir = settings.UPLOADS_DIR
 uploads_dir.mkdir(parents=True, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
 

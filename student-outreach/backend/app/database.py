@@ -3,11 +3,20 @@ from sqlmodel import SQLModel, create_engine, Session, select
 from app.config import settings
 from app.models.user import User
 
-# SQLite engine configuration
+# Handle Render PostgreSQL URL prefix (postgres:// -> postgresql://)
+db_url = settings.DATABASE_URL
+if db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+
+connect_args = {}
+if db_url.startswith("sqlite"):
+    connect_args = {"check_same_thread": False}
+
+# Engine configuration
 engine = create_engine(
-    settings.DATABASE_URL,
+    db_url,
     echo=False,
-    connect_args={"check_same_thread": False}
+    connect_args=connect_args
 )
 
 def init_db(seed_sample_data: bool = False):

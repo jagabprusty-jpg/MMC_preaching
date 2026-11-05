@@ -33,6 +33,13 @@ class Settings:
         db_path = BASE_DIR / "outreach.db"
         self.DATABASE_URL: str = os.getenv("DATABASE_URL", f"sqlite:///{db_path}")
         
+        # Uploads Directory (configurable for persistent disks)
+        upload_path_env = os.getenv("UPLOADS_DIR")
+        if upload_path_env:
+            self.UPLOADS_DIR: Path = Path(upload_path_env)
+        else:
+            self.UPLOADS_DIR: Path = BASE_DIR / "uploads"
+        
         # Default Admin Credentials
         self.ADMIN_USERNAME: str = os.getenv("ADMIN_USERNAME", "admin")
         self.ADMIN_PASSWORD: str = os.getenv("ADMIN_PASSWORD", "admin123")

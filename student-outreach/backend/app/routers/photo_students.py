@@ -21,7 +21,7 @@ from app.dependencies import get_current_active_user
 router = APIRouter(prefix="/api/photo-students", tags=["Photo Students Directory"])
 
 # Directory where uploaded student photos will be saved
-UPLOAD_DIR = settings.BASE_DIR / "uploads" / "students"
+UPLOAD_DIR = settings.UPLOADS_DIR / "students"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp"}
