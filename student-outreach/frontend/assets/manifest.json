@@ -1,0 +1,24 @@
+{
+  "name": "Mantra Outreach - Student Outreach & Meditation Management",
+  "short_name": "Mantra Outreach",
+  "description": "Mobile-friendly hostel outreach, student registration, attendance tracking, and meditation session management system.",
+  "start_url": "/dashboard.html",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#1b4332",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

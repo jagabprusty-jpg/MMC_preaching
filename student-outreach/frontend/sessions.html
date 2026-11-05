@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Sessions - Mantra Outreach</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1b4332">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <div id="drawer-backdrop" class="drawer-backdrop"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside id="app-sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <a href="/dashboard.html" class="header-brand">
+          <div class="brand-icon"><i class="fas fa-om"></i></div>
+          <div>
+            <div class="brand-title">Mantra Outreach</div>
+            <span class="brand-tag">Hostel Portal</span>
+          </div>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Core Modules</div>
+        <a href="/dashboard.html" class="nav-link">
+          <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
+        </a>
+        <a href="/students.html" class="nav-link">
+          <i class="fas fa-user-graduate"></i> <span>Students Directory</span>
+        </a>
+        <a href="/photo-directory.html" class="nav-link">
+          <i class="fas fa-camera-retro"></i> <span>Photo Directory</span>
+        </a>
+        <a href="/register-student.html" class="nav-link">
+          <i class="fas fa-user-plus"></i> <span>Register Student</span>
+        </a>
+        <a href="/attendance.html" class="nav-link">
+          <i class="fas fa-clipboard-check"></i> <span>Mark Attendance</span>
+        </a>
+        <a href="/sessions.html" class="nav-link active">
+          <i class="fas fa-calendar-alt"></i> <span>Sessions</span>
+        </a>
+        <a href="/followups.html" class="nav-link">
+          <i class="fas fa-phone-volume"></i> <span>Follow-ups</span>
+        </a>
+
+        <div class="nav-section-title">Analysis & Tools</div>
+        <a href="/reports.html" class="nav-link">
+          <i class="fas fa-chart-bar"></i> <span>Reports & Export</span>
+        </a>
+        <a href="/settings.html" class="nav-link">
+          <i class="fas fa-cog"></i> <span>Settings & Team</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div style="font-size:0.8rem;color:var(--text-muted);">Mantra Outreach</div>
+        <button class="header-btn btn-logout-action" title="Sign Out">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+      <header class="app-header">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button id="mobile-menu-toggle" class="header-btn mobile-menu-btn" title="Toggle Menu">
+            <i class="fas fa-bars"></i>
+          </button>
+          <span class="brand-title">Meditation Sessions</span>
+        </div>
+
+        <div class="header-actions">
+          <div class="user-badge">
+            <div id="header-user-avatar" class="avatar-circle">U</div>
+            <span id="header-user-name">User</span>
+            <span id="header-user-role" class="user-role-pill">Role</span>
+          </div>
+          <button class="header-btn btn-logout-action" title="Sign Out">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <div class="page-header">
+          <div>
+            <h1>Meditation Sessions</h1>
+            <p class="page-subtitle">Schedule and coordinate mantra meditation workshops, kirtans, and hostel wisdom talks</p>
+          </div>
+          <div class="page-header-actions">
+            <button type="button" id="btn-open-create-session" class="btn btn-primary">
+              <i class="fas fa-plus"></i> Schedule New Session
+            </button>
+          </div>
+        </div>
+
+        <!-- Sessions Grid Container -->
+        <div id="sessions-grid-container" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:18px;">
+          <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
+            <span class="loading-spinner"></span>
+            <p style="margin-top:10px; color:var(--text-muted);">Loading sessions...</p>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+      <a href="/dashboard.html" class="bottom-nav-item">
+        <i class="fas fa-chart-pie"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="/students.html" class="bottom-nav-item">
+        <i class="fas fa-user-graduate"></i>
+        <span>Students</span>
+      </a>
+      <a href="/register-student.html" class="bottom-nav-item highlight-action">
+        <div class="icon-bubble"><i class="fas fa-plus"></i></div>
+        <span>Register</span>
+      </a>
+      <a href="/attendance.html" class="bottom-nav-item">
+        <i class="fas fa-clipboard-check"></i>
+        <span>Attendance</span>
+      </a>
+      <a href="/followups.html" class="bottom-nav-item">
+        <i class="fas fa-comments"></i>
+        <span>Follow-ups</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- Create Session Modal -->
+  <div id="create-session-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="card-title"><i class="fas fa-calendar-plus" style="color:var(--primary);"></i> Schedule Meditation Session</h3>
+        <button type="button" class="header-btn" onclick="document.getElementById('create-session-modal').classList.remove('active')">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <form id="form-create-session">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label required" for="session-name">Session Name / Theme</label>
+            <input type="text" id="session-name" class="form-control" placeholder="e.g. Science of Mantra Meditation Workshop" required autofocus>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label required" for="session-date">Date (YYYY-MM-DD)</label>
+              <input type="date" id="session-date" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label required" for="session-time">Starting Time</label>
+              <input type="text" id="session-time" class="form-control" placeholder="e.g. 18:30 or 6:30 PM" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required" for="session-location">Location / Venue</label>
+            <input type="text" id="session-location" class="form-control" placeholder="e.g. Hostel 3 Common Room or Seminar Hall" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="session-description">Description / Agenda</label>
+            <textarea id="session-description" class="form-control form-textarea" placeholder="Brief outline of the meditation, speaker notes, or topics to cover..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="document.getElementById('create-session-modal').classList.remove('active')">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">
+            Create Session
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Session Modal -->
+  <div id="edit-session-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="card-title"><i class="fas fa-edit" style="color:var(--primary);"></i> Edit Session</h3>
+        <button type="button" class="header-btn" onclick="document.getElementById('edit-session-modal').classList.remove('active')">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <form id="form-edit-session">
+        <input type="hidden" id="edit-session-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label required" for="edit-session-name">Session Name</label>
+            <input type="text" id="edit-session-name" class="form-control" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label required" for="edit-session-date">Date</label>
+              <input type="date" id="edit-session-date" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label required" for="edit-session-time">Starting Time</label>
+              <input type="text" id="edit-session-time" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required" for="edit-session-location">Location</label>
+            <input type="text" id="edit-session-location" class="form-control" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="edit-session-description">Description</label>
+            <textarea id="edit-session-description" class="form-control form-textarea"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="document.getElementById('edit-session-modal').classList.remove('active')">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Session Confirmation Modal -->
+  <div id="delete-session-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width:400px;">
+      <div class="modal-header">
+        <h3 class="card-title" style="color:var(--danger);"><i class="fas fa-exclamation-triangle"></i> Delete Session</h3>
+        <button type="button" class="header-btn" onclick="document.getElementById('delete-session-modal').classList.remove('active')">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete session <strong id="delete-session-name-confirm"></strong>?</p>
+        <p style="font-size:0.85rem;color:var(--danger);margin-top:8px;">
+          This will delete all marked attendance records for this session.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('delete-session-modal').classList.remove('active')">
+          Cancel
+        </button>
+        <button type="button" id="btn-confirm-delete-session" class="btn btn-danger">
+          Delete Session
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/sessions.js"></script>
+  <script>
+    initSessionsPage();
+  </script>
+</body>
+</html>

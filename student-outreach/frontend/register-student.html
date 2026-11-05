@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Register Student - Mantra Outreach</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1b4332">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <div id="drawer-backdrop" class="drawer-backdrop"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside id="app-sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <a href="/dashboard.html" class="header-brand">
+          <div class="brand-icon"><i class="fas fa-om"></i></div>
+          <div>
+            <div class="brand-title">Mantra Outreach</div>
+            <span class="brand-tag">Hostel Portal</span>
+          </div>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Core Modules</div>
+        <a href="/dashboard.html" class="nav-link">
+          <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
+        </a>
+        <a href="/students.html" class="nav-link">
+          <i class="fas fa-user-graduate"></i> <span>Students Directory</span>
+        </a>
+        <a href="/photo-directory.html" class="nav-link">
+          <i class="fas fa-camera-retro"></i> <span>Photo Directory</span>
+        </a>
+        <a href="/register-student.html" class="nav-link active">
+          <i class="fas fa-user-plus"></i> <span>Register Student</span>
+        </a>
+        <a href="/attendance.html" class="nav-link">
+          <i class="fas fa-clipboard-check"></i> <span>Mark Attendance</span>
+        </a>
+        <a href="/sessions.html" class="nav-link">
+          <i class="fas fa-calendar-alt"></i> <span>Sessions</span>
+        </a>
+        <a href="/followups.html" class="nav-link">
+          <i class="fas fa-phone-volume"></i> <span>Follow-ups</span>
+        </a>
+
+        <div class="nav-section-title">Analysis & Tools</div>
+        <a href="/reports.html" class="nav-link">
+          <i class="fas fa-chart-bar"></i> <span>Reports & Export</span>
+        </a>
+        <a href="/settings.html" class="nav-link">
+          <i class="fas fa-cog"></i> <span>Settings & Team</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div style="font-size:0.8rem;color:var(--text-muted);">Mantra Outreach</div>
+        <button class="header-btn btn-logout-action" title="Sign Out">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+      <header class="app-header">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button id="mobile-menu-toggle" class="header-btn mobile-menu-btn" title="Toggle Menu">
+            <i class="fas fa-bars"></i>
+          </button>
+          <span class="brand-title">Student Registration</span>
+        </div>
+
+        <div class="header-actions">
+          <div class="user-badge">
+            <div id="header-user-avatar" class="avatar-circle">U</div>
+            <span id="header-user-name">User</span>
+            <span id="header-user-role" class="user-role-pill">Role</span>
+          </div>
+          <button class="header-btn btn-logout-action" title="Sign Out">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <div class="page-header">
+          <div>
+            <h1>Register New Student</h1>
+            <p class="page-subtitle">Collect student contact information and meditation interest during hostel room visits</p>
+          </div>
+        </div>
+
+        <!-- Registration Form Card (Mobile-first single column, touch friendly) -->
+        <div class="card" style="max-width:680px;margin:0 auto;">
+          <div class="card-header" style="background:var(--bg-subtle);">
+            <span class="card-title">
+              <i class="fas fa-address-card" style="color:var(--primary-light);"></i> Student Outreach Form
+            </span>
+            <span style="font-size:0.8rem;color:var(--text-muted);">* Required fields</span>
+          </div>
+
+          <form id="form-register-student">
+            <div class="card-body" style="padding:24px 20px;">
+              <!-- Full Name -->
+              <div class="form-group">
+                <label class="form-label required" for="reg-name">Student Full Name</label>
+                <input type="text" id="reg-name" class="form-control" placeholder="e.g. Aarav Sharma" required autofocus>
+              </div>
+
+              <!-- Registration Number & Room -->
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label required" for="reg-regno">College Registration / Roll No.</label>
+                  <input type="text" id="reg-regno" class="form-control" placeholder="e.g. 23BCE1045" required style="text-transform:uppercase;">
+                  <span class="form-help">Must be unique per student.</span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label required" for="reg-room">Room Number</label>
+                  <input type="text" id="reg-room" class="form-control" placeholder="e.g. Room 204" required>
+                </div>
+              </div>
+
+              <!-- Hostel Name -->
+              <div class="form-group">
+                <label class="form-label required" for="reg-hostel">Hostel Name / Block</label>
+                <input type="text" id="reg-hostel" class="form-control" placeholder="e.g. Hostel 1 - Ramanujan Hall" list="hostel-suggestions" required>
+                <datalist id="hostel-suggestions">
+                  <option value="Hostel 1 - Ramanujan Hall">
+                  <option value="Hostel 2 - Kalam Bhavan">
+                  <option value="Hostel 3 - Aryabhata Hostel">
+                  <option value="Hostel 4 - Vivekananda Nilayam">
+                </datalist>
+              </div>
+
+              <!-- Branch & Phone -->
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label required" for="reg-branch">Academic Branch</label>
+                  <input type="text" id="reg-branch" class="form-control" placeholder="e.g. Computer Science" list="branch-suggestions" required>
+                  <datalist id="branch-suggestions">
+                    <option value="Computer Science">
+                    <option value="Electronics & Comm">
+                    <option value="Mechanical Eng">
+                    <option value="Electrical Eng">
+                    <option value="Civil Eng">
+                    <option value="Information Tech">
+                  </datalist>
+                </div>
+                <div class="form-group">
+                  <label class="form-label required" for="reg-phone">Phone Number (WhatsApp)</label>
+                  <input type="tel" id="reg-phone" class="form-control" placeholder="e.g. +91 98765 43210" required>
+                  <span class="form-help">Used for call and WhatsApp follow-up.</span>
+                </div>
+              </div>
+
+              <!-- Initial Engagement Status -->
+              <div class="form-group">
+                <label class="form-label" for="reg-status">Initial Engagement Status</label>
+                <select id="reg-status" class="form-select">
+                  <option value="new">New Contact</option>
+                  <option value="interested">Interested (Wants reminders)</option>
+                  <option value="regular">Regular Participant</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+
+              <!-- Consents & Preferences (Large Touch Targets) -->
+              <div style="background:var(--bg-subtle);border-radius:var(--radius-md);padding:16px;margin:20px 0;display:flex;flex-direction:column;gap:14px;border:1px solid var(--border-light);">
+                <label class="form-checkbox-label">
+                  <input type="checkbox" id="reg-interested" checked>
+                  <div>
+                    <strong>Interested in Meditation Sessions</strong>
+                    <div class="form-help">Student expressed interest in attending upcoming mantra meditation programs.</div>
+                  </div>
+                </label>
+
+                <label class="form-checkbox-label">
+                  <input type="checkbox" id="reg-consent" checked>
+                  <div>
+                    <strong>Consent to Receive Communication</strong>
+                    <div class="form-help">Student consented to receive session reminders via phone call or WhatsApp message.</div>
+                  </div>
+                </label>
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" id="btn-submit-registration" class="btn btn-primary btn-full btn-lg">
+                <i class="fas fa-check-circle"></i> Save & Register Student
+              </button>
+            </div>
+          </form>
+        </div>
+      </main>
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+      <a href="/dashboard.html" class="bottom-nav-item">
+        <i class="fas fa-chart-pie"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="/students.html" class="bottom-nav-item">
+        <i class="fas fa-user-graduate"></i>
+        <span>Students</span>
+      </a>
+      <a href="/register-student.html" class="bottom-nav-item highlight-action active">
+        <div class="icon-bubble"><i class="fas fa-plus"></i></div>
+        <span>Register</span>
+      </a>
+      <a href="/attendance.html" class="bottom-nav-item">
+        <i class="fas fa-clipboard-check"></i>
+        <span>Attendance</span>
+      </a>
+      <a href="/followups.html" class="bottom-nav-item">
+        <i class="fas fa-comments"></i>
+        <span>Follow-ups</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- Registration Success Modal -->
+  <div id="registration-success-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width:420px;text-align:center;">
+      <div class="modal-body" style="padding:32px 20px;">
+        <div style="width:64px;height:64px;border-radius:50%;background:#dcfce7;color:#15803d;display:inline-flex;align-items:center;justify-content:center;font-size:2rem;margin-bottom:16px;">
+          <i class="fas fa-check"></i>
+        </div>
+        <h2 style="font-size:1.3rem;margin-bottom:6px;">Registration Successful!</h2>
+        <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:20px;">
+          <strong id="success-student-name">Student</strong> has been successfully added to the outreach database.
+        </p>
+
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <button type="button" class="btn btn-primary" onclick="document.getElementById('registration-success-modal').classList.remove('active');document.getElementById('reg-name').focus();">
+            <i class="fas fa-plus"></i> Register Another Student
+          </button>
+          <a href="#" id="success-view-profile-link" class="btn btn-secondary">
+            <i class="fas fa-user"></i> View Student Profile
+          </a>
+          <a href="/students.html" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i> Back to Directory
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/students.js"></script>
+  <script>
+    initRegisterStudentPage();
+  </script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Mantra Outreach & Meditation System</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1b4332">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body style="display:flex;align-items:center;justify-content:center;background-color:var(--bg-page);min-height:100vh;padding:16px;">
+
+  <div style="width:100%;max-width:420px;">
+    <!-- Logo & Title Header -->
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="width:52px;height:52px;background:var(--primary-subtle);color:var(--primary);border-radius:var(--radius-lg);display:inline-flex;align-items:center;justify-content:center;font-size:1.6rem;margin-bottom:12px;">
+        <i class="fas fa-om"></i>
+      </div>
+      <h1 style="font-size:1.5rem;font-weight:700;color:var(--primary);">Mantra Outreach</h1>
+      <p style="color:var(--text-muted);font-size:0.88rem;margin-top:4px;">Hostel Outreach & Meditation Management</p>
+    </div>
+
+    <!-- Login Card -->
+    <div class="card" style="box-shadow:var(--shadow-md);">
+      <div class="card-body" style="padding:26px 22px;">
+        <h2 style="font-size:1.2rem;margin-bottom:6px;">Sign In</h2>
+        <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:20px;">Enter your credentials to access volunteer tools.</p>
+
+        <!-- Error Message Alert -->
+        <div id="login-error" style="display:none;background:var(--danger-bg);color:var(--danger);padding:10px 14px;border-radius:var(--radius-md);font-size:0.85rem;margin-bottom:16px;border:1px solid #fca5a5;">
+        </div>
+
+        <form id="login-form">
+          <div class="form-group">
+            <label class="form-label required" for="username">Username</label>
+            <div style="position:relative;">
+              <input type="text" id="username" class="form-control" placeholder="e.g. admin or volunteer" required autocomplete="username" autofocus>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required" for="password">Password</label>
+            <div style="position:relative;">
+              <input type="password" id="password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+              <button type="button" onclick="togglePasswordVisibility()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer;min-height:unset;">
+                <i class="fas fa-eye" id="toggle-pwd-icon"></i>
+              </button>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+            <label class="form-checkbox-label" style="font-size:0.85rem;">
+              <input type="checkbox" id="remember-me" checked> Remember me
+            </label>
+          </div>
+
+          <button type="submit" id="btn-login-submit" class="btn btn-primary btn-full btn-lg">
+            <i class="fas fa-sign-in-alt"></i> Sign In to System
+          </button>
+        </form>
+
+        <!-- Quick Demo Fill Section -->
+        <div style="margin-top:24px;border-top:1px solid var(--border-light);padding-top:18px;">
+          <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:10px;text-align:center;">
+            Quick Demo Sign In
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <button type="button" id="btn-demo-admin" class="btn btn-secondary btn-sm" style="font-size:0.82rem;">
+              <i class="fas fa-user-shield" style="color:#b91c1c;"></i> Demo Admin
+            </button>
+            <button type="button" id="btn-demo-volunteer" class="btn btn-secondary btn-sm" style="font-size:0.82rem;">
+              <i class="fas fa-user-check" style="color:var(--primary);"></i> Demo Volunteer
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Security & Consent Note -->
+    <div style="text-align:center;margin-top:20px;font-size:0.78rem;color:var(--text-muted);">
+      <i class="fas fa-lock"></i> Secure volunteer portal. Student phone data protected.
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    redirectIfAuthenticated();
+    initLoginPage();
+
+    function togglePasswordVisibility() {
+      const pwdInput = document.getElementById('password');
+      const icon = document.getElementById('toggle-pwd-icon');
+      if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        icon.className = 'fas fa-eye-slash';
+      } else {
+        pwdInput.type = 'password';
+        icon.className = 'fas fa-eye';
+      }
+    }
+  </script>
+</body>
+</html>

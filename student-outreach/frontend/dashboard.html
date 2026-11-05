@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Dashboard - Mantra Outreach System</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1b4332">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Backdrop for Mobile Drawer -->
+    <div id="drawer-backdrop" class="drawer-backdrop"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside id="app-sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <a href="/dashboard.html" class="header-brand">
+          <div class="brand-icon"><i class="fas fa-om"></i></div>
+          <div>
+            <div class="brand-title">Mantra Outreach</div>
+            <span class="brand-tag">Hostel Portal</span>
+          </div>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Core Modules</div>
+        <a href="/dashboard.html" class="nav-link active">
+          <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
+        </a>
+        <a href="/students.html" class="nav-link">
+          <i class="fas fa-user-graduate"></i> <span>Students Directory</span>
+        </a>
+        <a href="/photo-directory.html" class="nav-link">
+          <i class="fas fa-camera-retro"></i> <span>Photo Directory</span>
+        </a>
+        <a href="/register-student.html" class="nav-link">
+          <i class="fas fa-user-plus"></i> <span>Register Student</span>
+        </a>
+        <a href="/attendance.html" class="nav-link">
+          <i class="fas fa-clipboard-check"></i> <span>Mark Attendance</span>
+        </a>
+        <a href="/sessions.html" class="nav-link">
+          <i class="fas fa-calendar-alt"></i> <span>Sessions</span>
+        </a>
+        <a href="/followups.html" class="nav-link">
+          <i class="fas fa-phone-volume"></i> <span>Follow-ups</span>
+        </a>
+
+        <div class="nav-section-title">Analysis & Tools</div>
+        <a href="/reports.html" class="nav-link">
+          <i class="fas fa-chart-bar"></i> <span>Reports & Export</span>
+        </a>
+        <a href="/settings.html" class="nav-link">
+          <i class="fas fa-cog"></i> <span>Settings & Team</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div style="font-size:0.8rem;color:var(--text-muted);">
+          Logged in as <strong id="sidebar-role-label">Volunteer</strong>
+        </div>
+        <button class="header-btn btn-logout-action" title="Sign Out">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+      <!-- Top Header Bar -->
+      <header class="app-header">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button id="mobile-menu-toggle" class="header-btn mobile-menu-btn" title="Toggle Menu">
+            <i class="fas fa-bars"></i>
+          </button>
+          <a href="/dashboard.html" class="header-brand" style="text-decoration:none;">
+            <div class="brand-icon"><i class="fas fa-om"></i></div>
+            <span class="brand-title">Mantra Outreach</span>
+          </a>
+        </div>
+
+        <div class="header-actions">
+          <div class="user-badge">
+            <div id="header-user-avatar" class="avatar-circle">U</div>
+            <span id="header-user-name">User</span>
+            <span id="header-user-role" class="user-role-pill">Role</span>
+          </div>
+          <button class="header-btn btn-logout-action" title="Sign Out">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Dashboard Main Body -->
+      <main class="main-content">
+        <!-- Page Title & Header Actions -->
+        <div class="page-header">
+          <div>
+            <h1>Outreach Dashboard</h1>
+            <p class="page-subtitle">Real-time statistics on hostel student participation and meditation sessions</p>
+          </div>
+          <div class="page-header-actions">
+            <a href="/register-student.html" class="btn btn-primary">
+              <i class="fas fa-user-plus"></i> Register Student
+            </a>
+            <a href="/attendance.html" class="btn btn-secondary">
+              <i class="fas fa-clipboard-check"></i> Mark Attendance
+            </a>
+          </div>
+        </div>
+
+        <!-- Follow-up Alert Banner (Shown if pending follow-ups exist) -->
+        <div id="followup-alert-banner" class="followup-alert-banner" style="display:none;">
+          <div class="followup-alert-content">
+            <div class="followup-alert-icon">
+              <i class="fas fa-bell"></i>
+            </div>
+            <div>
+              <strong style="color:#92400e;font-size:0.95rem;">Follow-up Attention Required</strong>
+              <div style="font-size:0.85rem;color:#78350f;">
+                You have <span id="followup-alert-count">0 students</span> who missed recent sessions or have a scheduled call due.
+              </div>
+            </div>
+          </div>
+          <a href="/followups.html" class="btn btn-sm btn-primary">
+            Review Follow-ups <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+
+        <!-- 6 Mandatory Metric Cards -->
+        <div class="stats-grid">
+          <!-- 1. Total Students -->
+          <div class="stat-card">
+            <div class="stat-icon emerald">
+              <i class="fas fa-user-graduate"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Total Students</span>
+              <span id="stat-total-students" class="stat-value">0</span>
+              <span class="stat-subtext">Registered hostel residents</span>
+            </div>
+          </div>
+
+          <!-- 2. Today's Attendance -->
+          <div class="stat-card">
+            <div class="stat-icon green">
+              <i class="fas fa-clipboard-user"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Today's Attendance</span>
+              <span id="stat-today-attendance" class="stat-value">0</span>
+              <span id="stat-today-subtext" class="stat-subtext">Turnout today</span>
+            </div>
+          </div>
+
+          <!-- 3. Regular Students -->
+          <div class="stat-card">
+            <div class="stat-icon green">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Regular Students</span>
+              <span id="stat-regular-students" class="stat-value">0</span>
+              <span class="stat-subtext">Consistent participants</span>
+            </div>
+          </div>
+
+          <!-- 4. Inactive Students -->
+          <div class="stat-card">
+            <div class="stat-icon slate">
+              <i class="fas fa-user-clock"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Inactive Students</span>
+              <span id="stat-inactive-students" class="stat-value">0</span>
+              <span class="stat-subtext">Requires re-engagement</span>
+            </div>
+          </div>
+
+          <!-- 5. Pending Follow-ups -->
+          <div class="stat-card">
+            <div class="stat-icon amber">
+              <i class="fas fa-phone-volume"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Pending Follow-ups</span>
+              <span id="stat-pending-followups" class="stat-value">0</span>
+              <span class="stat-subtext">Students needing contact</span>
+            </div>
+          </div>
+
+          <!-- 6. Total Sessions -->
+          <div class="stat-card">
+            <div class="stat-icon purple">
+              <i class="fas fa-om"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Total Sessions</span>
+              <span id="stat-total-sessions" class="stat-value">0</span>
+              <span class="stat-subtext">Conducted & scheduled</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Today's Attendance Summary Panel -->
+        <div class="today-summary-banner">
+          <div class="today-summary-header">
+            <div class="today-summary-title">
+              <i class="fas fa-calendar-check"></i> Today's Meditation Outreach Summary
+            </div>
+            <a href="/attendance.html" class="btn btn-sm btn-secondary" style="color:var(--primary);font-weight:600;">
+              Open Attendance Sheet
+            </a>
+          </div>
+          <div class="today-summary-stats">
+            <div class="today-stat-item">
+              <span id="today-banner-present" class="today-stat-number">0</span>
+              <span class="today-stat-label">Present</span>
+            </div>
+            <div class="today-stat-item">
+              <span id="today-banner-absent" class="today-stat-number">0</span>
+              <span class="today-stat-label">Absent</span>
+            </div>
+            <div class="today-stat-item">
+              <span id="today-banner-total" class="today-stat-number">0</span>
+              <span class="today-stat-label">Total Marked</span>
+            </div>
+          </div>
+          <div class="attendance-progress-wrap">
+            <div id="today-banner-bar" class="attendance-progress-bar" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <!-- Charts Grid (Weekly Attendance + Monthly Registrations) -->
+        <div class="charts-grid">
+          <!-- Weekly Attendance Chart -->
+          <div class="card chart-card">
+            <div class="card-header">
+              <span class="card-title">
+                <i class="fas fa-chart-column" style="color:var(--primary-light);"></i> Session Attendance History
+              </span>
+              <span style="font-size:0.75rem;color:var(--text-muted);">Last 7 Sessions</span>
+            </div>
+            <div class="card-body">
+              <div class="chart-container">
+                <canvas id="weeklyAttendanceChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Monthly Registration Trend Chart -->
+          <div class="card chart-card">
+            <div class="card-header">
+              <span class="card-title">
+                <i class="fas fa-arrow-trend-up" style="color:var(--primary-light);"></i> Monthly Registration Trend
+              </span>
+              <span style="font-size:0.75rem;color:var(--text-muted);">Last 6 Months</span>
+            </div>
+            <div class="card-body">
+              <div class="chart-container">
+                <canvas id="monthlyRegistrationsChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Two-column split: Recent Student Registrations & Upcoming Sessions -->
+        <div class="dashboard-split-grid">
+          <!-- Recent Student Registrations -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">
+                <i class="fas fa-user-plus" style="color:var(--primary-light);"></i> Recent Student Registrations
+              </span>
+              <a href="/students.html" class="btn btn-secondary btn-sm">View All</a>
+            </div>
+            <div class="card-body">
+              <div id="recent-students-list" class="mini-item-list">
+                <div style="text-align:center;padding:20px;color:var(--text-muted);">
+                  <span class="loading-spinner"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Upcoming Sessions -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">
+                <i class="fas fa-calendar-day" style="color:var(--primary-light);"></i> Outreach Sessions
+              </span>
+              <a href="/sessions.html" class="btn btn-secondary btn-sm">Manage</a>
+            </div>
+            <div class="card-body">
+              <div id="upcoming-sessions-list" class="mini-item-list">
+                <div style="text-align:center;padding:20px;color:var(--text-muted);">
+                  <span class="loading-spinner"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar (Fixed Bottom) -->
+    <nav class="bottom-nav">
+      <a href="/dashboard.html" class="bottom-nav-item active">
+        <i class="fas fa-chart-pie"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="/students.html" class="bottom-nav-item">
+        <i class="fas fa-user-graduate"></i>
+        <span>Students</span>
+      </a>
+      <a href="/register-student.html" class="bottom-nav-item highlight-action">
+        <div class="icon-bubble">
+          <i class="fas fa-plus"></i>
+        </div>
+        <span>Register</span>
+      </a>
+      <a href="/attendance.html" class="bottom-nav-item">
+        <i class="fas fa-clipboard-check"></i>
+        <span>Attendance</span>
+      </a>
+      <a href="/followups.html" class="bottom-nav-item">
+        <i class="fas fa-comments"></i>
+        <span>Follow-ups</span>
+      </a>
+    </nav>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/dashboard.js"></script>
+  <script>
+    initDashboard();
+  </script>
+</body>
+</html>

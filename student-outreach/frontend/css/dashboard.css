@@ -1,0 +1,195 @@
+/* ==========================================================================
+   DASHBOARD SPECIFIC STYLES
+   Stat Grids, Chart Containers, Summary Panels & Activity Timelines
+   ========================================================================== */
+
+/* Stat Cards Grid (6 cards required: Total Students, Today's Attendance, Regular Students, Inactive Students, Pending Follow-ups, Total Sessions) */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+/* Charts Grid */
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.chart-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 270px;
+  max-height: 270px;
+}
+
+/* Today's Attendance Summary Panel */
+.today-summary-banner {
+  background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%);
+  color: #ffffff;
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(27, 67, 50, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.today-summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.today-summary-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.today-summary-stats {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.today-stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.today-stat-number {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.today-stat-label {
+  font-size: 0.75rem;
+  opacity: 0.85;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Progress bar */
+.attendance-progress-wrap {
+  width: 100%;
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.25);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.attendance-progress-bar {
+  height: 100%;
+  background-color: #52b788;
+  border-radius: var(--radius-full);
+  transition: width 0.6s ease;
+}
+
+/* Two-column Content Split */
+.dashboard-split-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 18px;
+}
+
+/* Compact Student / Session Item List */
+.mini-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mini-item-card {
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  transition: var(--transition);
+}
+
+.mini-item-card:hover {
+  border-color: var(--primary-border);
+  background-color: var(--bg-hover);
+}
+
+.mini-item-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.mini-item-name {
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mini-item-meta {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mini-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Pending Follow-up Action Banner */
+.followup-alert-banner {
+  background-color: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.followup-alert-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.followup-alert-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: #fef3c7;
+  color: #b45309;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
