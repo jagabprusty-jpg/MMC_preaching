@@ -24,8 +24,33 @@ router = APIRouter(prefix="/api/photo-students", tags=["Photo Students Directory
 UPLOAD_DIR = settings.UPLOADS_DIR / "students"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
-ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp"}
+ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".heic", ".heif"}
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
+
+def resolve_image_extension(filename: Optional[str], content_type: Optional[str]) -> str:
+    """Safely determine image extension from filename or MIME type (essential for mobile uploads)."""
+    ext = Path(filename or "").suffix.lower()
+    if ext in ALLOWED_EXTENSIONS:
+        return ext
+
+    ct = (content_type or "").lower()
+    if "jpeg" in ct or "jpg" in ct:
+        return ".jpg"
+    elif "png" in ct:
+        return ".png"
+    elif "webp" in ct:
+        return ".webp"
+    elif "gif" in ct:
+        return ".gif"
+    elif "heic" in ct:
+        return ".heic"
+    elif "heif" in ct:
+        return ".heif"
+    elif "bmp" in ct:
+        return ".bmp"
+
+    # Default fallback for camera snapshots
+    return ".jpg"
 
 @router.get("", response_model=PhotoStudentListResponse)
 def list_photo_students(
@@ -99,8 +124,8 @@ async def create_photo_student(
     if not phone_number.strip():
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Phone number is required")
 
-    # Validate image extension
-    ext = Path(photo.filename or "photo.jpg").suffix.lower()
+    # Validate image extension and format (handles mobile blobs and extensionless uploads)
+    ext = resolve_image_extension(photo.filename, photo.content_type)
     if ext not in ALLOWED_EXTENSIONS:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -198,8 +223,8 @@ async def update_photo_student(
         record.notes = notes.strip() if notes.strip() else None
 
     # If new photo uploaded, replace old one
-    if photo and photo.filename:
-        ext = Path(photo.filename).suffix.lower()
+    if photo and (photo.filename or photo.size):
+        ext = resolve_image_extension(photo.filename, photo.content_type)
         if ext not in ALLOWED_EXTENSIONS:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -211,8 +236,9 @@ async def update_photo_student(
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Image exceeds 10MB limit")
 
         # Try to delete old photo file
-        if record.photo_url.startswith("/uploads/students/"):
-            old_file = settings.BASE_DIR / record.photo_url.lstrip("/")
+        if record.photo_url and record.photo_url.startswith("/uploads/students/"):
+            old_filename = Path(record.photo_url).name
+            old_file = UPLOAD_DIR / old_filename
             if old_file.exists():
                 try:
                     old_file.unlink()
@@ -257,7 +283,8 @@ def delete_photo_student(
 
     # Remove file from disk
     if record.photo_url and record.photo_url.startswith("/uploads/students/"):
-        photo_path = settings.BASE_DIR / record.photo_url.lstrip("/")
+        old_filename = Path(record.photo_url).name
+        photo_path = UPLOAD_DIR / old_filename
         if photo_path.exists():
             try:
                 photo_path.unlink()

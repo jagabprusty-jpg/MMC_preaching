@@ -6,7 +6,7 @@
 /* Stat Cards Grid (6 cards required: Total Students, Today's Attendance, Regular Students, Inactive Students, Pending Follow-ups, Total Sessions) */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
   gap: 16px;
   margin-bottom: 24px;
 }
@@ -14,7 +14,7 @@
 /* Charts Grid */
 .charts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
   gap: 18px;
   margin-bottom: 24px;
 }
@@ -104,7 +104,7 @@
 /* Two-column Content Split */
 .dashboard-split-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
   gap: 18px;
 }
 

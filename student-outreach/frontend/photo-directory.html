@@ -27,6 +27,9 @@
             <span class="brand-tag">Hostel Portal</span>
           </div>
         </a>
+        <button type="button" class="header-btn mobile-drawer-close" id="mobile-drawer-close" title="Close Menu">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
 
       <nav class="sidebar-nav">
@@ -117,7 +120,7 @@
         </div>
 
         <!-- Mobile-Responsive Photo Grid (1 column on phones for big photos, 2-4 on larger displays) -->
-        <div id="photo-grid-container" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:20px;margin-bottom:24px;">
+        <div id="photo-grid-container" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(min(100%, 260px), 1fr));gap:20px;margin-bottom:24px;">
           <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
             <span class="loading-spinner"></span>
             <p style="margin-top:10px; color:var(--text-muted);">Loading student photo directory...</p>
@@ -226,29 +229,86 @@
 
       <form id="form-upload-photo" enctype="multipart/form-data">
         <div class="modal-body">
-          <!-- Student Photo Capture / File Input -->
-          <div class="form-group">
-            <label class="form-label required" for="upload-photo-file">Student Photo</label>
+          <!-- Student Photo Capture & Gallery Picker Component -->
+          <div class="form-group" style="margin-bottom:18px;">
+            <label class="form-label required">Student Photo</label>
+
+            <!-- Hidden Mobile File Inputs -->
+            <!-- 1. Gallery input (accepts all images without capture attribute for Android & iOS gallery) -->
             <input 
               type="file" 
-              id="upload-photo-file" 
-              class="form-control" 
+              id="upload-photo-gallery" 
+              accept="image/jpeg,image/png,image/webp,image/gif,image/bmp,image/heic,image/heif,image/*" 
+              style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;"
+            >
+            <!-- 2. Camera capture input (with capture="environment" for direct mobile camera) -->
+            <input 
+              type="file" 
+              id="upload-photo-camera" 
               accept="image/*" 
               capture="environment" 
-              required
+              style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;"
             >
-            <span class="form-help">Take a photo using smartphone camera or select an image file (JPG, PNG, WebP up to 10MB).</span>
-          </div>
 
-          <!-- Live Photo Preview -->
-          <div id="upload-preview-wrap" style="display:none;margin-bottom:16px;text-align:center;">
-            <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;">Photo Preview:</div>
-            <img 
-              id="upload-preview-img" 
-              src="" 
-              alt="Preview" 
-              style="width:100%;max-height:220px;object-fit:cover;border-radius:var(--radius-md);border:2px solid var(--primary-border);"
-            >
+            <!-- Selection Box (Shown before photo is selected) -->
+            <div id="upload-picker-box" style="border:2px dashed var(--border-medium);border-radius:var(--radius-lg);padding:18px 14px;background:var(--bg-subtle);text-align:center;transition:var(--transition);">
+              <div style="width:48px;height:48px;border-radius:50%;background:var(--primary-subtle);color:var(--primary);display:inline-flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:10px;">
+                <i class="fas fa-camera-retro"></i>
+              </div>
+              <div style="font-weight:600;font-size:0.95rem;color:var(--text-main);margin-bottom:4px;">
+                Add Student Photo
+              </div>
+              <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:14px;">
+                Pick an existing photo from gallery or take a live picture with smartphone camera.
+              </p>
+              
+              <!-- Two Mobile Touch Action Buttons -->
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:340px;margin:0 auto;">
+                <button type="button" id="btn-trigger-gallery" class="btn btn-secondary" style="min-height:44px;font-size:0.88rem;">
+                  <i class="fas fa-images" style="color:var(--accent);"></i> Gallery / Files
+                </button>
+                <button type="button" id="btn-trigger-camera" class="btn btn-secondary" style="min-height:44px;font-size:0.88rem;">
+                  <i class="fas fa-camera" style="color:var(--primary);"></i> Take Photo
+                </button>
+              </div>
+              <div class="form-help" style="margin-top:10px;font-size:0.75rem;">
+                Supports JPG, PNG, WebP, HEIC up to 10MB
+              </div>
+            </div>
+
+            <!-- Live Photo Preview & Management Card (Shown when photo selected) -->
+            <div id="upload-preview-wrap" style="display:none;">
+              <div style="border:2px solid var(--primary-border);border-radius:var(--radius-lg);overflow:hidden;background:#0f172a;box-shadow:var(--shadow-sm);">
+                <!-- Image Display with safe height and aspect ratio -->
+                <div style="position:relative;width:100%;max-height:240px;min-height:160px;background:#020617;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                  <img 
+                    id="upload-preview-img" 
+                    src="" 
+                    alt="Preview" 
+                    style="max-width:100%;max-height:240px;object-fit:contain;display:block;"
+                  >
+                  <span class="badge badge-regular" style="position:absolute;top:8px;left:8px;box-shadow:0 2px 6px rgba(0,0,0,0.4);">
+                    <i class="fas fa-check"></i> Photo Selected
+                  </span>
+                </div>
+
+                <!-- Info & Actions Footer -->
+                <div style="padding:10px 14px;background:var(--bg-surface);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--border-light);">
+                  <div style="flex:1;min-width:140px;overflow:hidden;">
+                    <div id="upload-preview-name" style="font-size:0.84rem;font-weight:600;color:var(--text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">image.jpg</div>
+                    <div id="upload-preview-size" style="font-size:0.75rem;color:var(--text-muted);">0 KB</div>
+                  </div>
+                  <div style="display:flex;gap:6px;">
+                    <button type="button" id="btn-replace-photo" class="btn btn-secondary btn-sm" style="min-height:36px;font-size:0.8rem;" title="Replace photo">
+                      <i class="fas fa-sync-alt"></i> Change
+                    </button>
+                    <button type="button" id="btn-remove-photo" class="btn btn-secondary btn-sm" style="color:var(--danger);min-height:36px;font-size:0.8rem;" title="Remove photo">
+                      <i class="fas fa-trash-alt"></i> Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Name -->
@@ -297,19 +357,49 @@
       <form id="form-edit-photo">
         <input type="hidden" id="edit-photo-id">
         <div class="modal-body">
-          <div style="text-align:center;margin-bottom:14px;">
-            <img 
-              id="edit-preview-img" 
-              src="" 
-              alt="Current Photo" 
-              style="width:120px;height:120px;object-fit:cover;border-radius:50%;border:3px solid var(--primary-border);box-shadow:var(--shadow-sm);"
-            >
-          </div>
+          <!-- Student Photo Edit & Replacement Component -->
+          <div class="form-group" style="text-align:center;margin-bottom:16px;">
+            <div style="position:relative;display:inline-block;margin:6px auto 10px;">
+              <img 
+                id="edit-preview-img" 
+                src="" 
+                alt="Current Photo" 
+                style="width:120px;height:120px;object-fit:cover;border-radius:50%;border:3px solid var(--primary-border);box-shadow:var(--shadow-md);"
+              >
+              <span id="edit-photo-status-badge" style="display:none;position:absolute;bottom:2px;right:2px;" class="badge badge-regular">
+                <i class="fas fa-check"></i> Changed
+              </span>
+            </div>
 
-          <div class="form-group">
-            <label class="form-label" for="edit-photo-file">Replace Photo (Optional)</label>
-            <input type="file" id="edit-photo-file" class="form-control" accept="image/*" capture="environment">
-            <span class="form-help">Leave empty to keep current photo.</span>
+            <!-- Hidden Inputs for Edit -->
+            <input 
+              type="file" 
+              id="edit-photo-gallery" 
+              accept="image/jpeg,image/png,image/webp,image/gif,image/bmp,image/heic,image/heif,image/*" 
+              style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;"
+            >
+            <input 
+              type="file" 
+              id="edit-photo-camera" 
+              accept="image/*" 
+              capture="environment" 
+              style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;"
+            >
+
+            <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:6px;">
+              <button type="button" id="btn-edit-pick-gallery" class="btn btn-secondary btn-sm" style="min-height:38px;">
+                <i class="fas fa-images" style="color:var(--accent);"></i> From Gallery
+              </button>
+              <button type="button" id="btn-edit-pick-camera" class="btn btn-secondary btn-sm" style="min-height:38px;">
+                <i class="fas fa-camera" style="color:var(--primary);"></i> Take Photo
+              </button>
+              <button type="button" id="btn-edit-revert-photo" class="btn btn-secondary btn-sm" style="display:none;color:var(--text-muted);min-height:38px;">
+                <i class="fas fa-undo"></i> Keep Original
+              </button>
+            </div>
+            <div class="form-help" style="margin-top:6px;font-size:0.75rem;">
+              Leave unchanged to keep current student photo.
+            </div>
           </div>
 
           <div class="form-group">

@@ -252,48 +252,165 @@ function openBigPhotoModal(studentId) {
 }
 
 // ==========================================
-// Upload & Edit Modals Logic
+// Upload & Edit Modals Logic (Mobile Optimized)
 // ==========================================
+
+let currentUploadFile = null;
+let currentUploadPreviewUrl = null;
+let currentEditFile = null;
+let currentEditPreviewUrl = null;
+let originalEditPhotoUrl = null;
+
+function formatBytes(bytes) {
+  if (!bytes || bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+
+function validateImageFile(file) {
+  if (!file) return { valid: false, error: 'No photo selected.' };
+
+  const validExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.bmp', '.heic', '.heif'];
+  const fileName = (file.name || '').toLowerCase();
+  const hasValidExt = validExtensions.some(ext => fileName.endsWith(ext));
+  const isImageMime = file.type ? file.type.startsWith('image/') : true;
+
+  if (!hasValidExt && !isImageMime) {
+    return { valid: false, error: 'Please select a valid image file (JPG, PNG, WebP, HEIC).' };
+  }
+
+  // 10 MB limit
+  const maxBytes = 10 * 1024 * 1024;
+  if (file.size > maxBytes) {
+    return { 
+      valid: false, 
+      error: `Photo size (${formatBytes(file.size)}) exceeds the 10MB limit. Please choose a smaller photo.` 
+    };
+  }
+
+  return { valid: true };
+}
+
+function resetUploadModalState() {
+  currentUploadFile = null;
+  if (currentUploadPreviewUrl) {
+    URL.revokeObjectURL(currentUploadPreviewUrl);
+    currentUploadPreviewUrl = null;
+  }
+
+  const galleryInput = document.getElementById('upload-photo-gallery');
+  const cameraInput = document.getElementById('upload-photo-camera');
+  if (galleryInput) galleryInput.value = '';
+  if (cameraInput) cameraInput.value = '';
+
+  const previewWrap = document.getElementById('upload-preview-wrap');
+  const pickerBox = document.getElementById('upload-picker-box');
+  const previewImg = document.getElementById('upload-preview-img');
+
+  if (previewImg) previewImg.src = '';
+  if (previewWrap) previewWrap.style.display = 'none';
+  if (pickerBox) pickerBox.style.display = 'block';
+}
+
 function openUploadModal() {
   const modal = document.getElementById('upload-photo-modal');
   const form = document.getElementById('form-upload-photo');
-  const preview = document.getElementById('upload-preview-img');
-  const previewWrap = document.getElementById('upload-preview-wrap');
 
   if (form) form.reset();
-  if (preview) preview.src = '';
-  if (previewWrap) previewWrap.style.display = 'none';
+  resetUploadModalState();
 
   if (modal) modal.classList.add('active');
 }
 
 function bindUploadForm() {
-  const fileInput = document.getElementById('upload-photo-file');
-  const previewImg = document.getElementById('upload-preview-img');
+  const galleryInput = document.getElementById('upload-photo-gallery');
+  const cameraInput = document.getElementById('upload-photo-camera');
+  const btnTriggerGallery = document.getElementById('btn-trigger-gallery');
+  const btnTriggerCamera = document.getElementById('btn-trigger-camera');
+  const btnReplacePhoto = document.getElementById('btn-replace-photo');
+  const btnRemovePhoto = document.getElementById('btn-remove-photo');
   const previewWrap = document.getElementById('upload-preview-wrap');
+  const pickerBox = document.getElementById('upload-picker-box');
+  const previewImg = document.getElementById('upload-preview-img');
+  const previewName = document.getElementById('upload-preview-name');
+  const previewSize = document.getElementById('upload-preview-size');
   const form = document.getElementById('form-upload-photo');
   const btnSubmit = document.getElementById('btn-submit-photo-upload');
 
-  // Live preview when file or camera photo is selected
-  if (fileInput) {
-    fileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        if (!file.type.startsWith('image/')) {
-          showToast('Please select a valid image file', 'error');
-          fileInput.value = '';
-          return;
-        }
-        const reader = new FileReader();
-        reader.onload = (evt) => {
-          if (previewImg) previewImg.src = evt.target.result;
-          if (previewWrap) previewWrap.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-      }
+  // Trigger mobile gallery picker
+  if (btnTriggerGallery && galleryInput) {
+    btnTriggerGallery.addEventListener('click', (e) => {
+      e.preventDefault();
+      galleryInput.click();
     });
   }
 
+  // Trigger mobile camera capture
+  if (btnTriggerCamera && cameraInput) {
+    btnTriggerCamera.addEventListener('click', (e) => {
+      e.preventDefault();
+      cameraInput.click();
+    });
+  }
+
+  // Handle selected photo (from either gallery or camera)
+  const handleFile = (file) => {
+    if (!file) return;
+
+    const check = validateImageFile(file);
+    if (!check.valid) {
+      showToast(check.error, 'error');
+      if (galleryInput) galleryInput.value = '';
+      if (cameraInput) cameraInput.value = '';
+      return;
+    }
+
+    currentUploadFile = file;
+    if (currentUploadPreviewUrl) {
+      URL.revokeObjectURL(currentUploadPreviewUrl);
+    }
+    currentUploadPreviewUrl = URL.createObjectURL(file);
+
+    if (previewImg) previewImg.src = currentUploadPreviewUrl;
+    if (previewName) previewName.textContent = file.name || 'camera_photo.jpg';
+    if (previewSize) previewSize.textContent = formatBytes(file.size);
+
+    if (pickerBox) pickerBox.style.display = 'none';
+    if (previewWrap) previewWrap.style.display = 'block';
+  };
+
+  if (galleryInput) {
+    galleryInput.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      handleFile(file);
+    });
+  }
+
+  if (cameraInput) {
+    cameraInput.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      handleFile(file);
+    });
+  }
+
+  // Replace photo button
+  if (btnReplacePhoto && galleryInput) {
+    btnReplacePhoto.addEventListener('click', () => {
+      galleryInput.click();
+    });
+  }
+
+  // Remove photo button
+  if (btnRemovePhoto) {
+    btnRemovePhoto.addEventListener('click', () => {
+      resetUploadModalState();
+      showToast('Photo removed. Select a new photo or capture one.', 'info');
+    });
+  }
+
+  // Form submission
   if (form) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -301,15 +418,14 @@ function bindUploadForm() {
       const name = document.getElementById('upload-name').value.trim();
       const phone = document.getElementById('upload-phone').value.trim();
       const notes = document.getElementById('upload-notes').value.trim();
-      const file = fileInput ? fileInput.files[0] : null;
 
       if (!name || !phone) {
         showToast('Please enter both student name and phone number', 'error');
         return;
       }
 
-      if (!file) {
-        showToast('Please select or capture a photo of the student', 'error');
+      if (!currentUploadFile) {
+        showToast('Please select or capture a photo of the student first', 'error');
         return;
       }
 
@@ -317,7 +433,7 @@ function bindUploadForm() {
       formData.append('name', name);
       formData.append('phone_number', phone);
       if (notes) formData.append('notes', notes);
-      formData.append('photo', file);
+      formData.append('photo', currentUploadFile, currentUploadFile.name || 'student_photo.jpg');
 
       const origText = btnSubmit.innerHTML;
       btnSubmit.disabled = true;
@@ -332,6 +448,7 @@ function bindUploadForm() {
         showToast(`Student photo for "${name}" uploaded successfully!`, 'success');
         document.getElementById('upload-photo-modal').classList.remove('active');
         form.reset();
+        resetUploadModalState();
         loadPhotoStudents();
 
       } catch (err) {
@@ -343,19 +460,84 @@ function bindUploadForm() {
     });
   }
 
-  // Edit photo student file preview
-  const editFileInput = document.getElementById('edit-photo-file');
+  // Bind Edit Modal Pickers
+  bindEditModalPickers();
+}
+
+function bindEditModalPickers() {
+  const editGalleryInput = document.getElementById('edit-photo-gallery');
+  const editCameraInput = document.getElementById('edit-photo-camera');
+  const btnEditGallery = document.getElementById('btn-edit-pick-gallery');
+  const btnEditCamera = document.getElementById('btn-edit-pick-camera');
+  const btnEditRevert = document.getElementById('btn-edit-revert-photo');
   const editPreviewImg = document.getElementById('edit-preview-img');
-  if (editFileInput && editPreviewImg) {
-    editFileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (evt) => {
-          editPreviewImg.src = evt.target.result;
-        };
-        reader.readAsDataURL(file);
+  const statusBadge = document.getElementById('edit-photo-status-badge');
+
+  if (btnEditGallery && editGalleryInput) {
+    btnEditGallery.addEventListener('click', (e) => {
+      e.preventDefault();
+      editGalleryInput.click();
+    });
+  }
+
+  if (btnEditCamera && editCameraInput) {
+    btnEditCamera.addEventListener('click', (e) => {
+      e.preventDefault();
+      editCameraInput.click();
+    });
+  }
+
+  const handleEditFile = (file) => {
+    if (!file) return;
+
+    const check = validateImageFile(file);
+    if (!check.valid) {
+      showToast(check.error, 'error');
+      if (editGalleryInput) editGalleryInput.value = '';
+      if (editCameraInput) editCameraInput.value = '';
+      return;
+    }
+
+    currentEditFile = file;
+    if (currentEditPreviewUrl) {
+      URL.revokeObjectURL(currentEditPreviewUrl);
+    }
+    currentEditPreviewUrl = URL.createObjectURL(file);
+
+    if (editPreviewImg) editPreviewImg.src = currentEditPreviewUrl;
+    if (statusBadge) statusBadge.style.display = 'inline-flex';
+    if (btnEditRevert) btnEditRevert.style.display = 'inline-flex';
+  };
+
+  if (editGalleryInput) {
+    editGalleryInput.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      handleEditFile(file);
+    });
+  }
+
+  if (editCameraInput) {
+    editCameraInput.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      handleEditFile(file);
+    });
+  }
+
+  if (btnEditRevert) {
+    btnEditRevert.addEventListener('click', () => {
+      currentEditFile = null;
+      if (currentEditPreviewUrl) {
+        URL.revokeObjectURL(currentEditPreviewUrl);
+        currentEditPreviewUrl = null;
       }
+      if (editGalleryInput) editGalleryInput.value = '';
+      if (editCameraInput) editCameraInput.value = '';
+      if (editPreviewImg && originalEditPhotoUrl) {
+        editPreviewImg.src = originalEditPhotoUrl;
+      }
+      if (statusBadge) statusBadge.style.display = 'none';
+      if (btnEditRevert) btnEditRevert.style.display = 'none';
+      showToast('Reverted to original photo', 'info');
     });
   }
 }
@@ -366,12 +548,30 @@ async function openEditPhotoModal(studentId) {
     const modal = document.getElementById('edit-photo-modal');
     if (!modal) return;
 
+    currentEditFile = null;
+    originalEditPhotoUrl = st.photo_url;
+    if (currentEditPreviewUrl) {
+      URL.revokeObjectURL(currentEditPreviewUrl);
+      currentEditPreviewUrl = null;
+    }
+
     document.getElementById('edit-photo-id').value = st.id;
     document.getElementById('edit-photo-name').value = st.name;
     document.getElementById('edit-photo-phone').value = st.phone_number;
     document.getElementById('edit-photo-notes').value = st.notes || '';
-    document.getElementById('edit-preview-img').src = st.photo_url;
-    document.getElementById('edit-photo-file').value = '';
+    
+    const editPreviewImg = document.getElementById('edit-preview-img');
+    if (editPreviewImg) editPreviewImg.src = st.photo_url;
+
+    const statusBadge = document.getElementById('edit-photo-status-badge');
+    const btnEditRevert = document.getElementById('btn-edit-revert-photo');
+    if (statusBadge) statusBadge.style.display = 'none';
+    if (btnEditRevert) btnEditRevert.style.display = 'none';
+
+    const editGalleryInput = document.getElementById('edit-photo-gallery');
+    const editCameraInput = document.getElementById('edit-photo-camera');
+    if (editGalleryInput) editGalleryInput.value = '';
+    if (editCameraInput) editCameraInput.value = '';
 
     modal.classList.add('active');
 
@@ -381,14 +581,20 @@ async function openEditPhotoModal(studentId) {
       const updatedName = document.getElementById('edit-photo-name').value.trim();
       const updatedPhone = document.getElementById('edit-photo-phone').value.trim();
       const updatedNotes = document.getElementById('edit-photo-notes').value.trim();
-      const newFile = document.getElementById('edit-photo-file').files[0];
 
       const formData = new FormData();
       formData.append('name', updatedName);
       formData.append('phone_number', updatedPhone);
       formData.append('notes', updatedNotes);
-      if (newFile) {
-        formData.append('photo', newFile);
+      if (currentEditFile) {
+        formData.append('photo', currentEditFile, currentEditFile.name || 'replacement.jpg');
+      }
+
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const origText = submitBtn ? submitBtn.innerHTML : 'Save Changes';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<span class="loading-spinner" style="width:16px;height:16px;border-width:2px;"></span> Saving...`;
       }
 
       try {
@@ -403,6 +609,11 @@ async function openEditPhotoModal(studentId) {
 
       } catch (err) {
         showToast(`Update failed: ${err.message}`, 'error');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = origText;
+        }
       }
     };
 

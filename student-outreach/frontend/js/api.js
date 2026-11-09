@@ -197,32 +197,81 @@ function initNavigation() {
   const menuBtn = document.getElementById('mobile-menu-toggle');
   const sidebar = document.getElementById('app-sidebar');
   const backdrop = document.getElementById('drawer-backdrop');
+  const drawerCloseBtn = document.getElementById('mobile-drawer-close');
 
-  if (menuBtn && sidebar && backdrop) {
-    const toggleMenu = () => {
-      sidebar.classList.toggle('open');
-      backdrop.classList.toggle('active');
-    };
+  const openDrawer = () => {
+    if (sidebar && backdrop) {
+      sidebar.classList.add('open');
+      backdrop.classList.add('active');
+      document.body.classList.add('drawer-open');
+    }
+  };
 
-    menuBtn.addEventListener('click', toggleMenu);
-    backdrop.addEventListener('click', toggleMenu);
+  const closeDrawer = () => {
+    if (sidebar && backdrop) {
+      sidebar.classList.remove('open');
+      backdrop.classList.remove('active');
+      document.body.classList.remove('drawer-open');
+    }
+  };
+
+  if (menuBtn) {
+    menuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (sidebar && sidebar.classList.contains('open')) {
+        closeDrawer();
+      } else {
+        openDrawer();
+      }
+    });
   }
 
-  // Active link detection based on current page
-  const currentPath = window.location.pathname;
-  const pageName = currentPath.split('/').pop() || 'dashboard.html';
+  if (backdrop) {
+    backdrop.addEventListener('click', closeDrawer);
+  }
+
+  if (drawerCloseBtn) {
+    drawerCloseBtn.addEventListener('click', closeDrawer);
+  }
+
+  // Auto-close drawer when clicking any link inside sidebar
+  if (sidebar) {
+    sidebar.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        closeDrawer();
+      });
+    });
+  }
+
+  // Close drawer on ESC key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeDrawer();
+  });
+
+  // Robust active link detection based on current URL path
+  let currentPath = window.location.pathname.replace(/^\/+|\/+$/g, '');
+  if (!currentPath || currentPath === 'index.html') currentPath = 'dashboard.html';
+  if (!currentPath.endsWith('.html')) currentPath += '.html';
 
   document.querySelectorAll('.nav-link').forEach(link => {
-    const href = link.getAttribute('href');
-    if (href && (href === pageName || (pageName === '' && href === 'dashboard.html') || (pageName === 'index.html' && href === 'dashboard.html'))) {
+    let href = (link.getAttribute('href') || '').replace(/^\/+|\/+$/g, '');
+    if (href && !href.endsWith('.html')) href += '.html';
+
+    if (href && (href === currentPath || (currentPath === 'student-details.html' && href === 'students.html'))) {
       link.classList.add('active');
+    } else {
+      link.classList.remove('active');
     }
   });
 
   document.querySelectorAll('.bottom-nav-item').forEach(link => {
-    const href = link.getAttribute('href');
-    if (href && href === pageName) {
+    let href = (link.getAttribute('href') || '').replace(/^\/+|\/+$/g, '');
+    if (href && !href.endsWith('.html')) href += '.html';
+
+    if (href && (href === currentPath || (currentPath === 'student-details.html' && href === 'students.html'))) {
       link.classList.add('active');
+    } else {
+      link.classList.remove('active');
     }
   });
 

@@ -27,6 +27,9 @@
             <span class="brand-tag">Hostel Portal</span>
           </div>
         </a>
+        <button type="button" class="header-btn mobile-drawer-close" id="mobile-drawer-close" title="Close Menu">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
 
       <nav class="sidebar-nav">
@@ -106,7 +109,7 @@
         </div>
 
         <!-- Sessions Grid Container -->
-        <div id="sessions-grid-container" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:18px;">
+        <div id="sessions-grid-container" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(min(100%, 300px), 1fr));gap:18px;">
           <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
             <span class="loading-spinner"></span>
             <p style="margin-top:10px; color:var(--text-muted);">Loading sessions...</p>

@@ -4,25 +4,32 @@
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   Mobile Default (< 1024px)
+   Mobile & Tablet (< 1024px)
    -------------------------------------------------------------------------- */
 @media (max-width: 1023px) {
-  /* Hide sidebar offscreen on mobile/tablet */
+  /* Offscreen Drawer Navigation */
   .sidebar {
     transform: translateX(-100%);
+    box-shadow: none;
   }
 
   .sidebar.open {
     transform: translateX(0);
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 6px 0 24px rgba(0, 0, 0, 0.2);
+  }
+
+  .mobile-drawer-close {
+    display: flex !important;
   }
 
   .main-wrapper {
     margin-left: 0;
     width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
   }
 
-  /* Show bottom navigation bar */
+  /* Show fixed bottom navigation bar */
   .bottom-nav {
     display: flex;
   }
@@ -34,16 +41,19 @@
 }
 
 /* --------------------------------------------------------------------------
-   Table-to-Card Responsive Transformation
+   Tablets and Standard Mobile (< 768px)
    -------------------------------------------------------------------------- */
 @media (max-width: 768px) {
+  /* Force single column on grids that overflow */
+  #sessions-grid-container,
   .charts-grid,
-  .dashboard-split-grid {
-    grid-template-columns: 1fr;
+  .dashboard-split-grid,
+  .settings-grid {
+    grid-template-columns: 1fr !important;
   }
 
   .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr) !important;
     gap: 12px;
   }
 
@@ -63,9 +73,10 @@
     font-size: 1.35rem;
   }
 
-  /* Transform table to card list */
+  /* Transform tabular data into vertical card lists */
   .responsive-card-table {
     display: block;
+    width: 100%;
   }
 
   .responsive-card-table thead {
@@ -76,6 +87,7 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
+    width: 100%;
   }
 
   .responsive-card-table tr {
@@ -86,21 +98,25 @@
     border-radius: var(--radius-lg);
     padding: 14px;
     box-shadow: var(--shadow-xs);
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .responsive-card-table td {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 6px 0;
+    padding: 8px 0;
     border-bottom: 1px dashed var(--border-light);
     font-size: 0.88rem;
+    min-width: 0;
+    word-break: break-word;
   }
 
   .responsive-card-table td:last-child {
     border-bottom: none;
-    padding-top: 10px;
-    justify-content: flex-end;
+    padding-top: 12px;
+    justify-content: stretch;
     gap: 8px;
   }
 
@@ -112,10 +128,12 @@
     text-transform: uppercase;
     letter-spacing: 0.03em;
     margin-right: 12px;
+    flex-shrink: 0;
   }
 
-  /* Form layouts: 1 column on mobile */
-  .form-row {
+  /* Form layouts: single column stack on mobile */
+  .form-row,
+  .form-row.three-col {
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -124,6 +142,7 @@
   .filter-bar {
     flex-direction: column;
     align-items: stretch;
+    gap: 10px;
   }
 
   .search-wrap {
@@ -137,7 +156,8 @@
     gap: 8px;
   }
 
-  .filter-selects .form-select {
+  .filter-selects .form-select,
+  .filter-selects .btn {
     width: 100%;
     min-width: 0;
   }
@@ -156,51 +176,122 @@
 
   .page-header-actions {
     width: 100%;
-    justify-content: stretch;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
   }
 
   .page-header-actions .btn {
-    flex: 1;
+    flex: 1 1 auto;
+    min-height: 44px;
+    justify-content: center;
+  }
+
+  /* Modal touch targets */
+  .modal-overlay {
+    padding: 10px;
+  }
+
+  .modal-content {
+    max-height: calc(100vh - 20px);
+    max-height: calc(100dvh - 20px);
+    width: 100%;
   }
 }
 
 /* --------------------------------------------------------------------------
-   Small Mobile Screens (320px - 380px)
+   Medium to Large Phones (< 600px)
    -------------------------------------------------------------------------- */
-@media (max-width: 480px) {
+@media (max-width: 600px) {
+  /* Navbar adaptations */
+  .app-header {
+    padding: 0 12px;
+  }
+
+  .brand-title {
+    font-size: 1rem;
+    max-width: 160px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .user-badge {
+    padding: 0;
+    background: transparent;
+    border: none;
+  }
+
+  .user-badge span:not(.avatar-circle) {
+    display: none !important; /* Only show avatar circle icon on phones */
+  }
+
+  /* Photo Directory single column grid on phones */
   #photo-grid-container {
     grid-template-columns: 1fr !important;
     gap: 16px !important;
   }
 
-  .stats-grid {
-    grid-template-columns: 1fr; /* Single column stats on very narrow screens */
+  /* Attendance Card Large Touch Buttons */
+  .responsive-card-table td[data-label="Mark Attendance"] {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
   }
 
+  .responsive-card-table td[data-label="Mark Attendance"]::before {
+    margin-bottom: 6px;
+  }
+
+  .responsive-card-table td[data-label="Mark Attendance"] > div {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .responsive-card-table td[data-label="Mark Attendance"] .btn {
+    min-height: 44px;
+    font-size: 0.95rem;
+    justify-content: center;
+  }
+
+  /* Summary Banners */
+  .today-summary-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  /* Lightbox on mobile portrait */
+  #big-photo-modal .modal-content {
+    max-height: calc(100dvh - 16px);
+  }
+
+  #lightbox-photo-img {
+    max-height: 45vh !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Small Mobile Screens (320px - 430px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 480px) {
   .main-content {
     padding: 12px 10px;
   }
 
-  .today-summary-banner {
-    padding: 16px 14px;
-  }
-
-  .today-summary-stats {
-    gap: 12px;
-    justify-content: space-between;
-  }
-
-  .today-stat-number {
-    font-size: 1.4rem;
+  .brand-title {
+    font-size: 0.92rem;
+    max-width: 135px;
   }
 
   .filter-selects {
-    grid-template-columns: 1fr; /* Stack filter selects on 320px */
+    grid-template-columns: 1fr !important; /* Full stack on narrow screens */
   }
 
   .modal-content {
-    margin: 8px;
-    max-height: 94vh;
+    margin: 4px;
     border-radius: var(--radius-lg);
   }
 
@@ -208,19 +299,79 @@
     padding: 12px 14px;
   }
 
-  .header-brand .brand-title {
-    font-size: 0.98rem;
+  .modal-footer {
+    flex-direction: column-reverse;
+    gap: 8px;
   }
 
-  .user-badge span:not(.avatar-circle) {
-    display: none; /* Only show avatar icon on tiny screens */
+  .modal-footer .btn {
+    width: 100%;
+    min-height: 44px;
   }
 
   .toast-container {
-    right: 10px;
-    left: 10px;
+    right: 8px;
+    left: 8px;
     width: auto;
-    bottom: 74px;
+    bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px) + 10px);
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+  }
+
+  .page-numbers {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Extra Small Mobile Screens (320px - 360px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 360px) {
+  .app-header {
+    padding: 0 8px;
+  }
+
+  .brand-title {
+    font-size: 0.85rem;
+    max-width: 105px;
+  }
+
+  .header-btn {
+    width: 36px;
+    height: 36px;
+    min-height: 36px;
+    font-size: 1rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr !important; /* 1 column stats on 320px */
+  }
+
+  .bottom-nav-item span {
+    font-size: 0.62rem;
+  }
+
+  .bottom-nav-item i {
+    font-size: 1.05rem;
+  }
+
+  .bottom-nav-item.highlight-action .icon-bubble {
+    width: 36px;
+    height: 36px;
+    margin-top: -10px;
+  }
+
+  h1 {
+    font-size: 1.3rem;
+  }
+
+  h2 {
+    font-size: 1.15rem;
   }
 }
 
@@ -234,6 +385,10 @@
 
   .drawer-backdrop {
     display: none;
+  }
+
+  .mobile-drawer-close {
+    display: none !important;
   }
 
   .main-wrapper {
@@ -267,6 +422,7 @@
 
   .form-row.three-col {
     grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
   }
 
   .page-header {
